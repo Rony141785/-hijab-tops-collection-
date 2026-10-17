@@ -1,1 +1,147 @@
 
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New Hijab & Tops Collection</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#fff7fa;color:#333}
+header{background:#963663;color:white;text-align:center;padding:22px 10px}
+header h1{font-size:25px}
+nav{background:#682847;padding:13px;text-align:center}
+nav a{color:white;margin:12px;text-decoration:none}
+.hero{text-align:center;padding:30px 12px;background:#f8dce9}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px}
+.product{background:white;border-radius:14px;padding:10px;text-align:center;box-shadow:0 3px 12px #e8d1dc}
+.product img{width:100%;height:175px;object-fit:cover;border-radius:10px}
+button{background:#963663;color:white;border:0;padding:12px;border-radius:7px;font-size:15px;cursor:pointer}
+.product button{width:100%}
+#cart{margin:12px;padding:16px;background:white;border-radius:12px}
+input,textarea{width:100%;padding:12px;margin:7px 0;border:1px solid #d8bdcb;border-radius:7px;font-size:16px}
+.remove{padding:5px 9px;background:#777;margin:4px}
+.total{font-size:20px;font-weight:bold}
+footer{background:#682847;color:white;text-align:center;padding:20px}
+@media(max-width:360px){.product img{height:125px}header h1{font-size:21px}}
+</style>
+</head>
+<body>
+<header>
+<h1>New Hijab & Tops Collection</h1>
+<p>আপনার পছন্দের হিজাব ও টপস একসাথে ❤️</p>
+</header>
+<nav>
+<a href="#home">হোম</a>
+<a href="#products">পণ্য</a>
+<a href="#cart">🛒 কার্ট (<span id="count">0</span>)</a>
+</nav>
+<section class="hero" id="home">
+<h2>নতুন কালেকশন এসেছে!</h2>
+<p>সুন্দর হিজাব ও স্টাইলিশ টপস কিনুন সহজেই।</p>
+</section>
+<h2 id="products" style="text-align:center">আমাদের পণ্য</h2>
+<section class="products">
+<div class="product">
+<img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=500&q=80" alt="ফ্যাশন কালেকশন">
+<h3>সুন্দর হিজাব</h3>
+<p>মূল্য: ৳২৫০</p>
+<button onclick="add('সুন্দর হিজাব',250)">কার্টে যোগ করুন</button>
+</div>
+<div class="product">
+<img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=500&q=80" alt="স্টাইলিশ পোশাক">
+<h3>স্টাইলিশ টপস</h3>
+<p>মূল্য: ৳৫৫০</p>
+<button onclick="add('স্টাইলিশ টপস',550)">কার্টে যোগ করুন</button>
+</div>
+</section>
+<section id="cart">
+<h2>🛒 আপনার কার্ট</h2>
+<div id="items">এখনো কোনো পণ্য যোগ করা হয়নি।</div>
+<p class="total" id="total">মোট: ৳০</p>
+<h2>অর্ডারের তথ্য</h2>
+<form onsubmit="sendOrder(event)">
+<label for="customer">আপনার নাম</label>
+<input id="customer" required placeholder="সম্পূর্ণ নাম">
+<label for="phone">মোবাইল নম্বর</label>
+<input id="phone" type="tel" required placeholder="01XXXXXXXXX">
+<label for="address">ডেলিভারি ঠিকানা</label>
+<textarea id="address" required placeholder="গ্রাম/এলাকা, থানা, জেলা"></textarea>
+<label for="notes">অতিরিক্ত তথ্য (ঐচ্ছিক)</label>
+<textarea id="notes" placeholder="রং, সাইজ বা অন্য কোনো নির্দেশনা"></textarea>
+<button type="submit" style="width:100%;background:#16864a;font-size:17px">WhatsApp-এ অর্ডার পাঠান</button>
+</form>
+<p style="font-size:13px">পরবর্তী ধাপে WhatsApp নম্বর বসাতে হবে। অর্ডার পাঠানোর আগে WhatsApp-এ তথ্য যাচাই করুন।</p>
+</section>
+<footer>
+<p>New Hijab & Tops Collection</p>
+<p>আপনার কেনাকাটার জন্য ধন্যবাদ ❤️</p>
+</footer>
+<script>
+// এখানে নিজের WhatsApp নম্বর লিখুন: বাংলাদেশের নম্বর 8801XXXXXXXXX
+const SHOP_WHATSAPP = "8801XXXXXXXXX";
+let cart = [];
+
+function add(name,price){
+  cart.push({name,price});
+  showCart();
+  document.getElementById('cart').scrollIntoView({behavior:'smooth'});
+}
+
+function removeItem(index){
+  cart.splice(index,1);
+  showCart();
+}
+
+function showCart(){
+  document.getElementById('count').textContent=cart.length;
+  const items=document.getElementById('items');
+  if(!cart.length){
+    items.textContent='এখনো কোনো পণ্য যোগ করা হয়নি।';
+  }else{
+    items.innerHTML=cart.map((p,i)=>
+      '<div style="padding:8px 0;border-bottom:1px solid #eee">'+
+      (i+1)+'. '+p.name+' — ৳'+p.price+
+      ' <button type="button" class="remove" onclick="removeItem('+i+')">বাদ দিন</button></div>'
+    ).join('');
+  }
+  const total=cart.reduce((sum,p)=>sum+p.price,0);
+  document.getElementById('total').textContent='মোট: ৳'+total;
+}
+
+function sendOrder(event){
+  event.preventDefault();
+  if(!cart.length){
+    alert('প্রথমে কার্টে পণ্য যোগ করুন।');
+    return;
+  }
+  if(SHOP_WHATSAPP==='8801XXXXXXXXX'){
+    alert('প্রথমে কোডে SHOP_WHATSAPP-এর জায়গায় আপনার দোকানের WhatsApp নম্বর বসান।');
+    return;
+  }
+
+  const name=document.getElementById('customer').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const address=document.getElementById('address').value.trim();
+  const notes=document.getElementById('notes').value.trim();
+  const total=cart.reduce((sum,p)=>sum+p.price,0);
+  const productList=cart.map((p,i)=>(i+1)+'. '+p.name+' — ৳'+p.price).join('\n');
+
+  const message=
+    'নতুন অর্ডার - New Hijab & Tops Collection\n\n'+
+    'নাম: '+name+'\n'+
+    'ক্রেতার ফোন: '+phone+'\n'+
+    'ঠিকানা: '+address+'\n'+
+    'পণ্য:\n'+productList+'\n\n'+
+    'মোট পণ্যমূল্য: ৳'+total+
+    (notes?'\nঅতিরিক্ত তথ্য: '+notes:'');
+
+  window.open(
+    'https://wa.me/'+SHOP_WHATSAPP+'?text='+encodeURIComponent(message),
+    '_blank'
+  );
+}
+showCart();
+</script>
+</body>
+</html>
